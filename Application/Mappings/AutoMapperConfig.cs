@@ -16,6 +16,7 @@ namespace Application.Mappings
             {
                 #region Notes
 
+                cfg.CreateMap<Comment, CommentDto>();
                 cfg.CreateMap<Note, NoteDto>();
                 cfg.CreateMap<CreateNoteDto, Note>();
                 cfg.CreateMap<UpdateNoteDto, Note>();

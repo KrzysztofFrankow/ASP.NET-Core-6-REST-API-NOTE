@@ -9,5 +9,13 @@ namespace Domain.Interfaces
         Note Add(Note note);
         void Update(Note note);
         void Delete(Note note);
+        
+        Task<Note> GetByIdAsync(
+            int id,
+            CancellationToken cancellationToken = default);
+
+        Task UpdateAsync(
+            Note note,
+            CancellationToken cancellationToken = default);
     }
 }

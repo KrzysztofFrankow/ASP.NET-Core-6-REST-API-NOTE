@@ -1,7 +1,6 @@
 using Application.Interfaces;
 using Application.Mappings;
 using Application.Services;
-using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
@@ -28,8 +27,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
-
-app.Map("/hello", () => "hello");
 
 // Configure the HTTP request pipeline.
 

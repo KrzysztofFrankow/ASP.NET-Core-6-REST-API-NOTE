@@ -3,11 +3,6 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -59,6 +54,33 @@ namespace Application.Services
         {
             var note = _noteRepository.GetById(id);
             _noteRepository.Delete(note);
-        } 
+        }
+
+        public async Task<CommentDto> AddCommentAsync(
+            CreateCommentDto createCommentDto,
+            CancellationToken cancellationToken = default)
+        {
+            var note = await _noteRepository.GetByIdAsync(createCommentDto.NoteId, cancellationToken);
+
+            if (note == null)
+            {
+                throw new Exception("Nie ma!");
+            }
+
+            var comment = new Comment
+            {
+                AuthorName = createCommentDto.AuthorName,
+                Content = createCommentDto.Content,
+                CreationTimestampUtc = DateTime.UtcNow
+            };
+
+            note.Comments.Add(comment);
+
+            await _noteRepository.UpdateAsync(note, cancellationToken);
+
+            var commentDto = _mapper.Map<CommentDto>(comment);
+
+            return commentDto;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -13,12 +14,12 @@ namespace Infrastructure.Repositories
         }
         public IQueryable<Note> GetAll()
         {
-            return _context.Notes;
+            return _context.Notes.Include(note => note.Comments);
         }
 
         public Note GetById(int id)
         {
-            return _context.Notes.SingleOrDefault(x => x.Id == id);
+            return _context.Notes.Include(note => note.Comments).SingleOrDefault(x => x.Id == id);
         }
 
         public Note Add(Note note)
@@ -38,6 +39,23 @@ namespace Infrastructure.Repositories
         {
             _context.Notes.Remove(note);
             _context.SaveChanges();
-        }     
+        }
+
+        public async Task<Note> GetByIdAsync(
+            int id,
+            CancellationToken cancellationToken = default) =>
+                await _context
+                    .Notes
+                    .FirstAsync(
+                        note => note.Id == id,
+                        cancellationToken);
+
+        public async Task UpdateAsync(
+            Note note,
+            CancellationToken cancellationToken = default)
+        {
+            _context.Notes.Update(note);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

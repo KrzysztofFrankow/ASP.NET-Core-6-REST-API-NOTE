@@ -58,5 +58,18 @@ namespace WebAPI.Controllers
             _noteService.DeleteNote(id);
             return NoContent();
         }
+
+        [SwaggerOperation(Summary = "Creates a note comment")]
+        [HttpPost("/{noteId:int}/comments")]
+        public async Task<IActionResult> GetCommentsAsync(
+            [FromRoute] int noteId,
+            [FromBody] CreateCommentDto createCommentDto,
+            CancellationToken cancellationToken = default)
+        {
+            createCommentDto.NoteId = noteId;
+            var commentDto = await _noteService.AddCommentAsync(createCommentDto, cancellationToken);
+            // ToDo: replace with Created, after implementing Get methods
+            return Ok(commentDto);
+        }
     }
 }
